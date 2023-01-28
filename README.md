@@ -45,3 +45,18 @@ Just create or copy payloads file on `template` folder
 `REMAMBER THAT U CAN USE THIS TOOL AS SYSTEM SHORTCUT IF U DO THAT DONT FORGET TO CHANGE THE PATH OF template FOLDER TO ABSOLUTE PATH `
 
 ![image tutorial](./doc/path.png) ![image tutorial](./doc/path2.png)
+
+
+## Steps to add the tool to shortcut 
+
+### 1 
+![image tutorial](./doc/keybord.png)
+
+### 2 
+![image tutorial](./doc/shortcut01.png)
+
+### 3 
+![image tutorial](./doc/addcommand.png)
+![image tutorial](./doc/shortcut.png)
+
+

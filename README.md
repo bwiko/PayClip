@@ -43,3 +43,5 @@ Just create or copy payloads file on `template` folder
 # NOTE 
 
 `REMAMBER THAT U CAN USE THIS TOOL AS SYSTEM SHORTCUT IF U DO THAT DONT FORGET TO CHANGE THE PATH OF template FOLDER TO ABSOLUTE PATH `
+
+![image tutorial](./doc/path.png) ![image tutorial](./doc/path2.png)

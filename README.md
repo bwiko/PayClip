@@ -57,6 +57,7 @@ Just create or copy payloads file on `template` folder
 
 ### 3 
 ![image tutorial](./doc/addcommand.png)
+<br>
 ![image tutorial](./doc/shortcut.png)
 
 

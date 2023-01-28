@@ -22,7 +22,7 @@ $ python3 python3 PyClip.py
 
 To copy the payload to the clipboard, simply click the payload file, then the payload.
 
-![image tutorial](.doc/simpleuse.png)
+![image tutorial](./doc/simpleuse.png)
 
 ## Using command 
 
@@ -32,6 +32,6 @@ To obtain a payload by command, simply type the following syntax then press ente
 payloadfile:number_of_payload 
 ```
 
-![image tutorial](.doc/cmdp.png)
+![image tutorial](./doc/cmdp.png)
 
 ## 

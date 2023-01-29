@@ -12,7 +12,7 @@ import time
 class MainClass(QWidget,Ui_Main):
   
     def __init__(self,parent=None):
-        QApplication.clipboard().setText("This is text 2 clipboard")
+        
         self.os= 'linux'
         self.templatpath = 'templates' 
         self.listoftemplets = []

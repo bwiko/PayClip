@@ -7,13 +7,13 @@ You can use this tool to  transfer payloads to the clipboard so you can use them
 # Install
 ```
 $ git clone https://github.com/bwiko/PayClip
-$ cd PayClip`
+$ cd PayClip
 $ pip3 install -r requirements.txt
 ```
 
 # Usage 
 ```
-$ python3 python3 PyClip.py
+$ python3  PyClip.py
 ```
 
 # Guide 

@@ -53,7 +53,8 @@ class Ui_Main(object):
         self.gridLayout.setColumnStretch(1, 3)
 
         self.retranslateUi(Form)
-
+        QWidget.setTabOrder(self.lineEdit, self.treeWidget)
+        QWidget.setTabOrder(self.treeWidget, self.listWidget)
         QMetaObject.connectSlotsByName(Form)
     # setupUi
 

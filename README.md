@@ -11,7 +11,7 @@ $ cd PayClip
 $ pip3 install -r requirements.txt
 ```
 ## NOTE : 
- you may need to install `xclip , notify-send ,xdotool' for the background version  
+ you may need to install `xclip , notify-send ,xdotool` for the background version  
 # Usage 
 ```
 $ python3  PyClip.py

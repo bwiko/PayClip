@@ -53,6 +53,7 @@ class MainClass(QWidget,Ui_Main):
         readf = open(filepath,'r') 
         indx=1
         for payloads in readf.readlines() : 
+
             if payloads[0] == '#' or payloads.strip() == '' :
                 qlistitem = QListWidgetItem(self.listWidget)
                 qlistitem.setText(payloads.strip()) 
@@ -61,8 +62,12 @@ class MainClass(QWidget,Ui_Main):
                 qlistitem.setBackground(QColor(50, 68, 168))
                 
             else :
+                textobject = payloads.split("<->")
                 qlistitem = QListWidgetItem(self.listWidget)
-                qlistitem.setText(str(indx)+"::"+payloads.strip()) 
+                
+                qlistitem.setText(str(indx)+"::"+textobject[0].strip()) 
+                if len(textobject) > 1 :
+                    qlistitem.setToolTip(textobject[1].strip())
                 indx+=1
             
     def getpayloads(self,itm) :

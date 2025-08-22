@@ -19,10 +19,13 @@ if re.search(sayntax,InintText):
         threshold = 1 
         NotFound = True 
         for Payload in FilePayload.readlines() : 
+            if Payload[0] == '#' or Payload.strip() == '' :
+                continue
+            
             if threshold == pyindex : 
                 
-                pycp.copy(Payload.strip())
-                time.sleep(0.3)
+                os.system(f"echo '{Payload.strip()}' | xclip -selection clipboard")
+                time.sleep(0.50)
                 os.system('xdotool  key ctrl+V')
                 # print(Payload.strip())
                 NotFound = False 

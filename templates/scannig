@@ -1,0 +1,21 @@
+nmap -sC -sV -Pn $TARGET 
+sudo nmap -sn -oA tnet -iL hosts.lst | grep for | cut -d" " -f5
+sudo nmap $TARGET/24 -sn -oA tnet | grep for | cut -d" " -f5
+sudo nmap $TARGET -sn -oA host -PE --packet-trace --disable-arp-ping 
+sudo nmap $TARGET -F -sU
+sudo nmap $TARGET -sU -Pn -n --disable-arp-ping --packet-trace -p 137 --reason
+sudo nmap $TARGET -p- -sV
+sudo nmap $TARGET -p- -sV --stats-every=5s
+sudo nmap $TARGET -p- -sV -v 
+sudo nmap $TARGET -sC
+sudo nmap $TARGET --script <category>
+sudo nmap $TARGET --script sn , sn 
+sudo nmap $TARGET -p 25 --script banner,smtp-commands
+sudo nmap $TARGET -p 80 -A 
+sudo nmap $TARGET -p 80 -sV --script vuln 
+sudo nmap $TARGET/24 -F --initial-rtt-timeout 50ms --max-rtt-timeout 100ms
+sudo nmap $TARGET -p 21,22,25 -sA -Pn -n --disable-arp-ping --packet-trace
+sudo nmap $TARGET -p 21,22,25 -sS -Pn -n --disable-arp-ping --packet-trace
+sudo nmap $TARGET -p 80 -sS -Pn -n --disable-arp-ping --packet-trace -D RND:5
+sudo nmap $TARGET -n -Pn -p 445 -O -S $SRCIP -e tun0
+sudo nmap $TARGET -p50000 -sS -Pn -n --disable-arp-ping --packet-trace --source-port 53

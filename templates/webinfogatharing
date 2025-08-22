@@ -1,0 +1,27 @@
+whois target.com
+# DNS Enumeration
+dig domain.com
+dig domain.com A
+dig domain.com AAAA
+dig domain.com MX
+dig domain.com NS
+dig domain.com TXT
+dig domain.com CNAME
+dig domain.com SOA
+dig @1.1.1.1 domain.com
+dig +trace domain.com
+dig -x 192.168.1.1
+dig +short domain.com
+dig +noall +answer domain.com
+dig domain.com ANY
+dnsenum --enum inlanefreight.com -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -r
+dig axfr @nsztm1.digi.ninja zonetransfer.me
+# Virtual Host Enumeration
+gobuster vhost -u http://$TARGET -w $WORDLIST --append-domain
+curl -s "https://crt.sh/?q=$TARGET&output=json" | jq -r '.[]
+curl -I inlanefreight.com
+# WEB Application Enumeration
+wafw00f inlanefreight.com
+nikto -h inlanefreight.com -Tuning b
+# ReconSpider.py  
+python3 ReconSpider.py http://inlanefreight.com #this is from htb 

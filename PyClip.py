@@ -1,7 +1,7 @@
 #!/usr/bin/env python3  
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from lib.ui_main import Ui_Main 
 import os 
 from pathlib import Path
@@ -12,9 +12,9 @@ import time
 class MainClass(QWidget,Ui_Main):
   
     def __init__(self,parent=None):
-        QApplication.clipboard().setText("This is text 2 clipboard")
+        
         self.os= 'linux'
-        self.templatpath = 'templates' 
+        self.templatpath = '/opt/tools/PayClip/templates' 
         self.listoftemplets = []
         
         self.valide = False 
@@ -26,7 +26,7 @@ class MainClass(QWidget,Ui_Main):
 
         self.treeWidget.itemClicked.connect(self.getpayloads)
         self.listWidget.itemClicked.connect(self.CopyToClip)
-        self.setIcon('icon/icon.png')
+        self.setIcon('/opt/tools/PayClip/icon/icon.png')
         self.PrepareTreelist()
        
         self.lineEdit.returnPressed.connect(self.CopyToClipCmd)
@@ -53,18 +53,28 @@ class MainClass(QWidget,Ui_Main):
         readf = open(filepath,'r') 
         indx=1
         for payloads in readf.readlines() : 
-            qlistitem = QListWidgetItem(self.listWidget)
-            qlistitem.setText(str(indx)+"::"+payloads.strip()) 
-            indx+=1
+            if payloads[0] == '#' or payloads.strip() == '' :
+                qlistitem = QListWidgetItem(self.listWidget)
+                qlistitem.setText(payloads.strip()) 
+                qlistitem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                qlistitem.setForeground(QColor(150,150,150))
+                qlistitem.setBackground(QColor(50, 68, 168))
+                
+            else :
+                qlistitem = QListWidgetItem(self.listWidget)
+                qlistitem.setText(str(indx)+"::"+payloads.strip()) 
+                indx+=1
+            
     def getpayloads(self,itm) :
         self.AfListpayload(self.templatpath+'/'+itm.text(0))
         
-    def CopyToClip(self,itm) : 
-        itm.setSelected(False)
-        payload_ = itm.text().split("::")[1]
-        print("Copied successfully ")
-        QApplication.clipboard().setText(payload_)
-        time.sleep(0.1)
+    def CopyToClip(self,itm) :
+        if itm.text()[0] !=  '#': 
+            itm.setSelected(False)
+            payload_ = itm.text().split("::")[1]
+            print("Copied successfully ")
+            QApplication.clipboard().setText(payload_)
+            time.sleep(0.1)
     
     def CopyByCmd(self) : 
         

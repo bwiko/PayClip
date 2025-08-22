@@ -8,9 +8,9 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 
 class Ui_Main(object):
@@ -53,7 +53,8 @@ class Ui_Main(object):
         self.gridLayout.setColumnStretch(1, 3)
 
         self.retranslateUi(Form)
-
+        QWidget.setTabOrder(self.lineEdit, self.treeWidget)
+        QWidget.setTabOrder(self.treeWidget, self.listWidget)
         QMetaObject.connectSlotsByName(Form)
     # setupUi
 

@@ -46,3 +46,43 @@ Test-AdminAccess -ComputerName ACADEMY-EA-MS01
 Get-DomainUser -SPN -Properties samaccountname,ServicePrincipalName
 .\Snaffler.exe  -d INLANEFREIGHT.LOCAL -s -v data
 .\SharpHound.exe -c All --zipfilename ILFREIGHT <-> to collect all the data from ad of course this work with windows only 
+#Some WD cmds : 
+netsh advfirewall show allprofiles <-> this command show the current configration of windows furewall 
+sc query windefend <-> show the status of windows defender 
+Get-MpComputerStatus <-> this to show the anabled&desabled settings 
+qwinsta <-> show all local session 
+#Windows Managment Instrumentation 
+wmic qfe get Caption,Description,HotFixID,InstalledOn <-> Prints the patch level and description of the Hotfixes applied
+wmic computersystem get Name,Domain,Manufacturer,Model,Username,Roles /format:List <-> Displays basic host information to include any attributes within the list
+wmic process list /format:list <-> A listing of all processes on host
+wmic ntdomain list /format:list <-> Displays information about the Domain and Domain Controllers
+wmic useraccount list /format:list <-> Displays information about all local accounts and any domain accounts that have logged into the device
+wmic group list /format:list <-> Information about all local groups
+wmic sysaccount list /format:list <-> Dumps information about any system accounts that are being used as service accounts.
+#Useful Net Commands
+net accounts <-> Information about password requirements
+net accounts /domain <-> Password and lockout policy
+net group /domain <-> Information about domain groups
+net group "Domain Admins" /domain <-> List users with domain admin privileges
+net group "domain computers" /domain <-> List of PCs connected to the domain
+net group "Domain Controllers" /domain <-> List PC accounts of domains controllers
+net group <domain_group_name> /domain <-> User that belongs to the group
+net groups /domain <-> List of domain groups
+net localgroup <-> All available groups
+net localgroup administrators /domain <-> List users that belong to the administrators group inside the domain (the group Domain Admins is included here by default)
+net localgroup Administrators <-> Information about a group (admins)
+net localgroup administrators [username] /add <-> Add user to administrators
+net share <-> Check current shares
+net user <ACCOUNT_NAME> /domain <-> Get information about a user within the domain
+net user /domain <-> List all users of the domain
+net user %username% <-> Information about the current user
+net use x: \computer\share <-> Mount the share locally
+net view <-> Get a list of computers
+net view /all /domain[:domainname] <-> Shares on the domains
+net view \computer /ALL <-> List shares of a computer
+net view /domain <-> List of PCs of the domain
+#Dsquery DLL
+dsquery user <-> list all user on da ad 
+dsquery compute <-> list all computer 
+dsquery * "CN=Users,DC=INLANEFREIGHT,DC=LOCAL" <-> wildcard search 
+dsquery * -filter "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=32))" -attr distinguishedName userAccountControl <-> Users With Specific Attributes Set (PASSWD_NOTREQD) 

